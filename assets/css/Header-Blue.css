@@ -1,8 +1,15 @@
+body{
+background-image: url(../img/Home.jpg);
+ margin: 0;
+ padding: 0;
+ background-size: 150%;
+ background-repeat: no-repeat;
+ 
+}
+
 .header-blue{
-  
-  background-image: url(../img/Home.jpg);
-  padding-bottom:120px;
-  font-family:'Source Sans Pro', sans-serif;
+font-family:'Source Sans Pro', sans-serif;
+
 }
 
 @media (max-width:767px) {
@@ -12,7 +19,7 @@
 }
 
 .header-blue .navbar{
-  background:none;
+  background:transparent;
   padding-top:12px;
   padding-bottom:10px;
   color:#fff;
@@ -84,8 +91,9 @@
   background-color:#eee;
 }
 
-.header-blue .navbar .navbar-collapse, .header-blue .navbar .navbar-form{
-  border-color:rgba(255,255,255,0.3);
+.header-blue .navbar-collapse{
+
+ color: #37434d;
 }
 
 .header-blue .navbar .navbar-nav > .active > a, .header-blue .navbar .navbar-nav > .open > a{
@@ -128,7 +136,7 @@
 }
 
 .header-blue .navbar .dropdown-menu > li > a:focus, .header-blue .navbar .dropdown-menu > li > a:hover{
-  background:#ebeff1;
+  background:rgb(139,79,115);
 }
 
 @media (max-width:767px) {
@@ -161,7 +169,8 @@
 }
 
 .header-blue .action-button:hover{
-  color:#fff;
+  color:rgb(144,135,164);
+  background: white;
 }
 
 .header-blue .action-button.btn-lg{
@@ -227,47 +236,32 @@
   margin-bottom:30px;
   font-weight:300;
 }
-
-.header-blue .phone-holder{
-  text-align:right;
+a .engras{
+  font-weight: bold;
+  color: rgb(139,79,115)
 }
 
-.header-blue div.iphone-mockup{
-  position:relative;
-  max-width:300px;
-  margin:20px;
-  display:inline-block;
-}
 
-.header-blue .iphone-mockup img.device{
-  width:100%;
-  height:auto;
-}
 
-.header-blue .iphone-mockup .screen{
-  position:absolute;
-  width:88%;
-  height:77%;
-  top:12%;
-  border-radius:2px;
-  left:6%;
-  border:1px solid #444;
-  background-color:#aaa;
-  overflow:hidden;
-  background:url(../../assets/img/skyscraper.jpg);
-  background-size:cover;
-  background-position:center;
+.header-blue .navbar.navbar-default .navbar-nav > .active > a{
+color :rgb(143,87,123);
+font-weight: bold;
 }
-
-.header-blue .iphone-mockup .screen:before{
-  content:'';
-  background-color:#fff;
-  position:absolute;
-  width:70%;
-  height:140%;
-  top:-12%;
-  right:-60%;
-  transform:rotate(-19deg);
-  opacity:0.2;
+.header-blue .navbar .navbar-brand {
+color :rgb(143,87,123);
+font-size: 2em;
 }
+.header-blue .action-button{
+  color :rgb(143,87,123);
+  border: solid 1px rgb(143,87,123);
+}
+.header-blue .hero h1{
+  margin-top: 150px;
+  margin-left: 0;
+}
+#bon{
+margin-left: 0;
+padding-left: 1px;
+padding-right: 1px;
 
+}
