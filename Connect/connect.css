@@ -6,12 +6,12 @@
 }
 
 body{
-  width: 100%;
+  background-image: url(./images/Home.jpg);
+  background-size: 130%;
   height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  background: -webkit-linear-gradient(left, #7579ff, #b224ef);
   font-family: 'Nunito', sans-serif;
 }
 
