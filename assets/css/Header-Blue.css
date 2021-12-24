@@ -16,7 +16,8 @@ font-family:'Source Sans Pro', sans-serif;
   color :rgb(143,87,123);
   font-size: 3em;
   font-weight: bolder;
-  margin-left: 4%;
+  margin-left: 0%;
+  margin-right: 20px;
   }
 
   .header-blue .navbar .navbar-brand:hover {
@@ -39,9 +40,10 @@ font-family:'Source Sans Pro', sans-serif;
 }
 
 .logo{
-  max-width: 5%;
- max-height: 5%;
- margin-left: 4%;
+  max-width: 3%;
+ max-height: 3%;
+ margin-left: 0.5%;
+ position: relative;
 }
 
 .header-blue .hero h1{
