@@ -1,88 +1,67 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Bienvenue sur le site officiel du JEERE</title>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet" type="text/css" href="connect.css" />
-    <link
-      href="https://fonts.googleapis.com/css?family=Nunito:400,600,700,800&display=swap"
-      rel="stylesheet"
-    />
-  </head>
-  <body>
-    <div class="bg-image"></div>
-    <div class="cont">
-      <div class="form sign-in">
-        <h2>Se connecter</h2>
-        <label>
-          <span> Adresse Email</span>
-          <input type="email" name="email" />
-        </label>
-        <label>
-          <span>Mot de passe</span>
-          <input type="password" name="password" />
-        </label>
-        <button class="submit" type="button">Se connecter</button>
-        <p class="forgot-pass">Mot de passe oublié ?</p>
 
-        <div class="social-media">
-          <ul>
-            <li><img src="images/facebook.png" /></li>
-            <li><img src="images/twitter.png" /></li>
-            <li><img src="images/linkedin.png" /></li>
-            <li><img src="images/instagram.png" /></li>
-          </ul>
-        </div>
-      </div>
+<head>
+  <title>Bienvenue sur le site officiel du JEERE</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" type="text/css" href="connect.css" />
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.7/css/all.css">
+</head>
 
-      <div class="sub-cont">
-        <div class="img">
-          <div class="img-text m-up">
-            <h2>Première visite ici ?</h2>
-            <p>
-              Inscrivez-vous et découvrez un grand nombre de nouvelles
-              opportunités!
-            </p>
-          </div>
-          <div class="img-text m-in">
-            <h2>Avez-vous déja un compte ?</h2>
-            <p>
-              Si vous avez déjà un compte, connectez-vous. Vous nous avez manqué
-              !
-            </p>
-          </div>
-          <div class="img-btn">
-            <span class="m-up">Créer un compte</span>
-            <span class="m-in">Se connecter</span>
-          </div>
+<body>
+  <nav>
+    <a href="../Header-Blue.html"><img class="log" src="./images/logo.png" alt=""></a>
+  </nav>
+  <div class="container" id="container">
+    <div class="form-container sign-up-container">
+      <form action="#">
+        <h1>Créer un compte</h1>
+        <div class="social-container">
+          <a href="#" class="social facebook"><i class="fab fa-facebook-f"></i></a>
+          <a href="#" class="social instagram"><i class="fab fa-instagram"></i></a>
+          <a href="#" class="social tweeter"><i class="fab fa-twitter"></i></a>
         </div>
-        <div class="form sign-up">
-          <h2>Créer un compte</h2>
-          <label>
-            <span>Nom</span>
-            <input type="text" />
-          </label>
-          <label>
-            <span>Prénom</span>
-            <input type="text" />
-          </label>
-          <label>
-            <span>Adresse Email</span>
-            <input type="email" />
-          </label>
-          <label>
-            <span>Mot de passe</span>
-            <input type="password" />
-          </label>
-          <label>
-            <span>Confirmer votre Mot de passe</span>
-            <input type="password" />
-          </label>
-          <button type="button" class="submit">Ouvrir un compte</button>
+        <!-- <span>or use your email for registration</span> -->
+        <input type="text" placeholder="Nom" />
+        <input type="text" placeholder="Prénom" />
+        <input type="email" placeholder="Email" />
+        <input type="password" placeholder="Mot de passe" />
+        <button>Créer un compte</button>
+      </form>
+    </div>
+    <div class="form-container sign-in-container">
+      <form action="#">
+        <h1>Se connecter</h1>
+        <div class="social-container">
+          <a href="#" class="social facebook"><i class="fab fa-facebook-f"></i></a>
+          <a href="#" class="social instagram"><i class="fab fa-instagram"></i></a>
+          <a href="#" class="social tweeter"><i class="fab fa-twitter"></i></a>
+        </div>
+        <!-- <span>or use your account</span> -->
+        <input type="email" placeholder="Email" required />
+        <input type="password" placeholder="Mot de passe" required/>
+        <a href="#" class="mpo"><strong>Mot de passe oublié ?</strong></a>
+        <button>Se connecter</button>
+      </form>
+    </div>
+    <div class="overlay-container">
+      <div class="overlay">
+        <div class="overlay-panel overlay-left">
+          <h1>Avez-vous déja un compte ?</h1>
+          <p>Si vous avez déjà un compte, connectez-vous. Vous nous avez manqué !</p>
+          <button class="ghost" id="signIn">Se connecter</button>
+        </div>
+        <div class="overlay-panel overlay-right">
+          <h1>Première visite ici ?</h1>
+          <p>Inscrivez-vous et découvrez un grand nombre de nouvelles
+            opportunités !</p>
+          <button type="button" class="ghost" id="signUp">Créer un compte</button>
         </div>
       </div>
     </div>
-    <script type="text/javascript" src="connect.js"></script>
-  </body>
+  </div>
+
+</body>
+<script src="./connect.js"></script>
 </html>
