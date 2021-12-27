@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css?family=Montserrat:400,800');
+
 * {
     box-sizing: border-box;
 }
@@ -157,11 +158,13 @@ input {
 }
 
 @keyframes show {
+
     0%,
     49.99% {
         opacity: 0;
         z-index: 1;
     }
+
     50%,
     100% {
         opacity: 1;
@@ -295,56 +298,66 @@ input {
 }
 
 
-/* 
-span {
-    margin-bottom: 20px;
+#card {
+    position: relative;
+    width: 40%;
     display: block;
-    font-size: 0.8rem;
-    visibility: hidden;
-    opacity: 0;
-    transition: 0.3s;
-    color: red;
-}
-
-p {
-    background: red;
-    width: 33%;
-    height: 6px;
-    margin: -2px 0 2px;
-    border-radius: 50px;
-    visibility: hidden;
-    transition: 0.3s;
-}
-
-#security span {
-    display: inline;
-}
-
-.error input {
-    color: red;
-    border: 1px solid rgba(255, 0, 0, 0.527);
-}
-
-.error span {
-    visibility: visible;
-    opacity: 1;
-    color: red;
-}
-
-.progressRed {
-    background: red;
-    width: 33%;
-    visibility: visible;
-}
-
-.progressBlue {
-    background: #16d9e7;
-    width: 67%;
-    visibility: visible;
-}
-
-.progressGreen {
-    width: 100%;
-    background: #5ef9a4;
-    visibility: visible;
-} */
+    margin: 40px auto;
+    text-align: center;
+    font-family: 'Source Sans Pro', sans-serif;
+  }
+  #upper-side {
+    padding: 2em;
+    background: #8f577b;
+    background: -webkit-linear-gradient(to right, #e4cedc, #8f577b);
+    background: linear-gradient(to right, #eeafd7, #8f577b);
+    display: block;
+    color: #fff;
+    border-top-right-radius: 8px;
+    border-top-left-radius: 8px;
+  }
+  #checkmark {
+    font-weight: lighter;
+    fill: #fff;
+    margin: -3.5em auto auto 4em;
+  }
+  #status {
+    font-weight: lighter;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: 1em;
+    margin-top: -.2em;
+    margin-bottom: 0;
+    text-align: center;
+  }
+  #lower-side {
+    padding: 2em 2em 5em 2em;
+    background: #fff;
+    display: block;
+    border-bottom-right-radius: 8px;
+    border-bottom-left-radius: 8px;
+  }
+  #message {
+    margin-top: -.5em;
+    color: #757575;
+    letter-spacing: 1px;
+  }
+  #contBtn {
+    position: relative;
+    top: 1.5em;
+    text-decoration: none;
+    background: #8f577b;
+    color: #fff;
+    margin: auto;
+    padding: .8em 3em;
+    box-shadow: 0px 15px 30px rgba(50, 50, 50, 0.21);
+    border-radius: 25px;
+          transition: all .4s ease;
+  }
+  #contBtn:hover {
+    background: #fff;
+    color: #8f577b;
+    font-weight: bolder;
+    box-shadow: 0px 15px 30px rgba(50, 50, 50, 0.41);
+          transition: all .4s ease;
+  }

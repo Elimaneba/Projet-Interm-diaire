@@ -1,0 +1,20 @@
+{
+  "name": "Projet-Interm-diaire",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Elimaneba/Projet-Interm-diaire.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Elimaneba/Projet-Interm-diaire/issues"
+  },
+  "homepage": "https://github.com/Elimaneba/Projet-Interm-diaire#readme"
+}
