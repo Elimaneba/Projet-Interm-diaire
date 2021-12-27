@@ -2,8 +2,9 @@
   "name": "Projet-Interm-diaire",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
+    "start": "nodemon app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -16,5 +17,10 @@
   "bugs": {
     "url": "https://github.com/Elimaneba/Projet-Interm-diaire/issues"
   },
-  "homepage": "https://github.com/Elimaneba/Projet-Interm-diaire#readme"
+  "homepage": "https://github.com/Elimaneba/Projet-Interm-diaire#readme",
+  "dependencies": {
+    "body-parser": "^1.19.1",
+    "express": "^4.17.2",
+    "mongoose": "^6.1.3"
+  }
 }
