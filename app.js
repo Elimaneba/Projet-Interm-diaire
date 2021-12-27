@@ -2,6 +2,9 @@ const express=require("express");
 const bodyParser=require("body-parser");
 const mongoose = require('mongoose');
 
+const port=3000;
+const host='http://127.0.0.1'
+
 mongoose.connect('mongodb://localhost:27017/bootcamp');
 const db=mongoose.connection;
 db.on('error', console.log.bind(console, "connection error"));
@@ -44,6 +47,5 @@ res.set({
     });
 return res.redirect('index.html');
 }).listen(3000)
-  
-  
-console.log("server listening at port 3000");
+
+console.log(`Server listenring on ${host}:${port}`);
