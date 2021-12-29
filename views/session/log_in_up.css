@@ -321,6 +321,15 @@ input {
     fill: #fff;
     margin: -3.5em auto auto 4em;
   }
+  #checkmarks {
+    font-weight: lighter;
+    fill: #fff;
+    width: 85px;
+    height: 85px;
+    margin-top: 0px;
+    margin-left: 25px;
+
+  }
   #status {
     font-weight: lighter;
     text-transform: uppercase;

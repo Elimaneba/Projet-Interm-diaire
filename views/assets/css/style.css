@@ -47,6 +47,7 @@ body {
   max-height: 15%;
   margin-left: 0.5%;
   position: relative;
+ 
 }
 
 .logo:hover {
@@ -117,4 +118,33 @@ body {
 
 .btn-outline-success:hover:focus {
   box-shadow: 0 0 0 0.25rem rgb(143 87 123 / 50%);
+}
+.nav-link nav-user-img{
+  margin-bottom: 37px;
+  width: 40px;
+  height: 40px;
+}
+#navbarDropdownMenuLink2{
+  margin-bottom: 37px;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+
+}
+
+#aH{
+
+ width: 50px;
+}
+
+.nav-user-name {}
+
+.nav-user-info {
+    background-color: rgb(143, 87, 123);
+    line-height: 1.4;
+    padding: 4px;
+    color: #fff;
+    font-size: 13px;
+    border-radius: 2px 2px 0 0
+
 }
