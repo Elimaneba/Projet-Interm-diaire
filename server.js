@@ -46,11 +46,6 @@ app.get("/sign_up", function (req, res) {
   res.render("log_in_up");
 });
 
-// Showing register form
-// app.get("/profil", function (req, res) {
-//   res.render("home");
-// });
-
 app.post("/sign_up", function (req, res) {
   bcrypt.hash(req.body.password, 10).then((hash) => {
     const user = new User({
@@ -97,19 +92,31 @@ app.post("/sign_in", async (req, res) => {
 });
 
 
-app.put("/profil", function (req, res) {
-  bcrypt.hash(req.body.password, 10).then((hash) => {
-    const user = new User({
-      password: hash,
-      fullname: req.body.fullname,
-      email: req.body.email,
-    });
-    db.collection("users").insertOne(user, function (err, collection) {
-      if (err) throw err;
-      console.log("Record inserted Successfully");
-    });
-    return res.redirect("Signup_Success.html");
+// Showing register form
+app.get("/update/:email", function (req, res) {
+  res.render("/update/:email");
+});
+
+app.post("/update/:email", async(req, res) => {
+  const update = {
+    fullname: req.body.fullname,
+    email: req.body.email,
+    // password: req.body.password,
+    phone: req.body.phone,
+    region: req.body.region,
+    pays: req.body.pays,
+  };
+
+  db.collection("users").insertOne(update, function (err, collection) {
+    if (err) throw err;
+    console.log("Record inserted Successfully");
   });
+  const filter = { email: req.params.email };
+  const updatedDocument = await User.findOneAndUpdate(filter, update, {
+    new: true,
+  });
+
+  return res.status(200).send(updatedDocument);
 });
 
 

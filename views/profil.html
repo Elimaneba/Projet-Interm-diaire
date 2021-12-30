@@ -50,8 +50,8 @@
 
       </nav>
 
-      <form action="/profil"
-      method="put">
+      <form action="/update/:email"
+      method="post">
         <div class="container hero">
           <div class="row profil">
             <div class="cont">
@@ -68,7 +68,8 @@
                               placeholder="email" name="email" id="email"/>
                       </div>
                       <div class="col-md-12">
-                        <label class="labels">Mot de passe</label><input type="password" class="form-control"
+                        <label class="labels">Mot de passe</label>
+                        <input type="password" class="form-control"
                             placeholder="mot de passe" name="password" id="password"/>
                     </div>
                       <div class="col-md-12">
