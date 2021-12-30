@@ -1,15 +1,15 @@
-const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
 const express = require("express");
-passport = require("passport");
+const app = express();
 bodyParser = require("body-parser");
-LocalStrategy = require("passport-local");
-passportLocalMongoose = require("passport-local-mongoose");
+
 User = require("./models/user");
 
 const host = "http://127.0.0.1";
 
 var mongoose = require("mongoose");
+const user = require("./models/user");
 mongoose.connect("mongodb://localhost:27017/bootcamp");
 
 var db = mongoose.connection;
@@ -20,24 +20,12 @@ db.once("open", function () {
   console.log("Connection Successful!");
 });
 
-const app = express();
-// app.set("view engine", "ejs");
+//;
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("views"));
-app.use(
-  require("express-session")({
-    secret: "Rusty is a dog",
-    resave: false,
-    saveUninitialized: false,
-  })
-);
-
-app.use(passport.initialize());
-app.use(passport.session());
-
-passport.use(new LocalStrategy(User.authenticate()));
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
 
 //=====================
 // ROUTES
@@ -48,7 +36,7 @@ app.get("/", function (req, res) {
   res.render("index");
 });
 
-// Showing home page
+//Showing home page
 app.get("/home", function (req, res) {
   res.render("home");
 });
@@ -58,28 +46,6 @@ app.get("/sign_up", function (req, res) {
   res.render("log_in_up");
 });
 
-// Handling user signup
-// app.post("/sign_up", function (req, res) {
-//   var fullname = req.body.fullname;
-//   var email = req.body.email;
-//   var password = req.body.password;
-//   // var Confirmer = req.body.Confirmer;
-
-//   User(
-//     new User({ fullname: fullname, email: email }),
-//     password,
-//     function (err, user) {
-//       if (err) {
-//         console.log(err);
-//         return res.render("log_in_up");
-//       }
-
-//       passport.authenticate("local")(req, res, function () {
-//         res.render("Signup_Success");
-//       });
-//     }
-//   );
-// });
 app.post("/sign_up", function (req, res) {
   bcrypt.hash(req.body.password, 10).then((hash) => {
     const user = new User({
@@ -101,7 +67,7 @@ app.get("/sign_in", function (req, res) {
 });
 
 //Handling user login
-app.post("/sign_in", (req, res, next) => {
+app.post("/sign_in", function (req, res) {
   User.findOne({ email: req.body.email })
     .then((user) => {
       if (!user) {
@@ -113,7 +79,7 @@ app.post("/sign_in", (req, res, next) => {
           if (!valid) {
             return res.status(401).json({ error: "Mot de passe incorrect !" });
           }
-          res.status(200).json({
+          return res.redirect("home.html").json({
             userId: user._id,
             token: jwt.sign({ userId: user._id }, "RANDOM_TOKEN_SECRET", {
               expiresIn: "24h",
@@ -125,15 +91,12 @@ app.post("/sign_in", (req, res, next) => {
     .catch((error) => res.status(500).json({ error }));
 });
 //Handling user logout
-// app.get("/logout", function (req, res) {
-//   req.logout();
-//   res.redirect("/log_in_up");
-// })
+app.get("/logout", function (req, res) {
+  res.redirect("/");
+});
 
-// function isLoggedIn(req, res, next) {
-//   if (req.isAuthenticated()) return next();
-//   res.redirect("/log_in_up");
-// }
+let newName = user.fullname;
+module.exports = newName;
 
 var port = process.env.PORT || 5000;
 app.listen(port, function () {

@@ -83,7 +83,7 @@
         </form>
       </div>
       <div class="form-container sign-in-container">
-        <form action="sign_in" method="get">
+        <form action="/sign_in" method="post">
           <h1>Se connecter</h1>
           <div class="social-container">
             <a href="#" class="social facebook"
@@ -97,9 +97,16 @@
             ></a>
           </div>
           <!-- <span>or use your account</span> -->
-          <input type="email" placeholder="Email" required autocomplete="on" />
+          <input
+            type="email"
+            name="email"
+            placeholder="Email"
+            required
+            autocomplete="on"
+          />
           <input
             type="password"
+            name="password"
             placeholder="Mot de passe"
             required
             autocomplete="off"
