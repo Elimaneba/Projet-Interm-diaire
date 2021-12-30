@@ -4,7 +4,7 @@ const express = require("express");
 const app = express();
 bodyParser = require("body-parser");
 
-User = require("./models/user");
+const User = require("./models/user");
 
 const host = "http://127.0.0.1";
 
@@ -46,6 +46,11 @@ app.get("/sign_up", function (req, res) {
   res.render("log_in_up");
 });
 
+// Showing register form
+// app.get("/profil", function (req, res) {
+//   res.render("home");
+// });
+
 app.post("/sign_up", function (req, res) {
   bcrypt.hash(req.body.password, 10).then((hash) => {
     const user = new User({
@@ -67,11 +72,11 @@ app.get("/sign_in", function (req, res) {
 });
 
 //Handling user login
-app.post("/sign_in", function (req, res) {
+app.post("/sign_in", async (req, res) => {
   User.findOne({ email: req.body.email })
     .then((user) => {
       if (!user) {
-        return res.status(401).json({ error: "Utilisateur non trouvé !" });
+        return res.statusCode(401).json({ error: "Utilisateur non trouvé !" });
       }
       bcrypt
         .compare(req.body.password, user.password)
@@ -90,6 +95,24 @@ app.post("/sign_in", function (req, res) {
     })
     .catch((error) => res.status(500).json({ error }));
 });
+
+
+app.put("/profil", function (req, res) {
+  bcrypt.hash(req.body.password, 10).then((hash) => {
+    const user = new User({
+      password: hash,
+      fullname: req.body.fullname,
+      email: req.body.email,
+    });
+    db.collection("users").insertOne(user, function (err, collection) {
+      if (err) throw err;
+      console.log("Record inserted Successfully");
+    });
+    return res.redirect("Signup_Success.html");
+  });
+});
+
+
 //Handling user logout
 app.get("/logout", function (req, res) {
   res.redirect("/");
