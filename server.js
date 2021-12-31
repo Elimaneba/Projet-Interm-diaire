@@ -91,25 +91,26 @@ app.post("/sign_in", async (req, res) => {
     .catch((error) => res.status(500).json({ error }));
 });
 
-
-// Showing register form
+// Showing UPDATE form
 app.get("/update/:email", function (req, res) {
   res.render("/update/:email");
 });
 
-app.post("/update/:email", async(req, res) => {
-  const update = {
-    fullname: req.body.fullname,
-    email: req.body.email,
-    // password: req.body.password,
-    phone: req.body.phone,
-    region: req.body.region,
-    pays: req.body.pays,
-  };
-
-  db.collection("users").insertOne(update, function (err, collection) {
-    if (err) throw err;
-    console.log("Record inserted Successfully");
+app.post("/update/:email", async (req, res) => {
+  const update =  bcrypt.hash(req.body.password, 10).then((hash) => {
+    const user = new User({
+      password: hash,
+      fullname: req.body.fullname,
+      email: req.body.email,
+      phone: req.body.phone,
+      region: req.body.region,
+      pays: req.body.pays,
+    });
+    db.collection("users").insertOne(user, function (err, collection) {
+      if (err) throw err;
+      console.log("Record inserted Successfully");
+    });
+    return res.redirect("home.html");
   });
   const filter = { email: req.params.email };
   const updatedDocument = await User.findOneAndUpdate(filter, update, {
