@@ -1,10 +1,10 @@
 {
-  "name": "Projet-Interm-diaire",
+  "name": "ProjetIntermdiaire",
   "version": "1.0.0",
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon server.js",
+    "start": "nodemon app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -19,16 +19,24 @@
   },
   "homepage": "https://github.com/Elimaneba/Projet-Interm-diaire#readme",
   "dependencies": {
+    "async": "^3.2.2",
     "bcrypt": "^5.0.1",
+    "bcrypt-nodejs": "0.0.3",
     "body-parser": "^1.19.1",
+    "consolidate": "^0.16.0",
+    "cookie-parser": "^1.4.6",
     "ejs": "^3.1.6",
     "express": "^4.17.2",
+    "express-flash": "0.0.2",
     "express-session": "^1.17.2",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.1.4",
     "mongoose-unique-validator": "^3.0.0",
+    "morgan": "^1.10.0",
+    "nodemailer": "^6.7.2",
     "passport": "^0.5.2",
     "passport-local": "^1.0.0",
-    "passport-local-mongoose": "^6.1.0"
+    "passport-local-mongoose": "^6.1.0",
+    "swig": "^1.4.2"
   }
 }

@@ -1,53 +1,268 @@
-// const express = require("express");
-// const bodyParser = require("body-parser");
-// const mongoose = require("mongoose");
+var express = require('express');
+var path = require('path');
+var logger = require('morgan');
+var cookieParser = require('cookie-parser');
+var bodyParser = require('body-parser');
+var session = require('express-session')
+var mongoose = require('mongoose');
+var nodemailer = require('nodemailer');
+var passport = require('passport');
+var LocalStrategy = require('passport-local').Strategy;
+var bcrypt = require('bcrypt-nodejs');
+var async = require('async');
+var crypto = require('crypto');
+var flash = require('express-flash');
+var cons = require('consolidate');
 
-// const port = 3000;
-// const host = "http://127.0.0.1";
+passport.use(new LocalStrategy(function(username, password, done) {
+  User.findOne({ username: username }, function(err, user) {
+    if (err) return done(err);
+    if (!user) return done(null, false, { message: 'Incorrect username.' });
+    user.comparePassword(password, function(err, isMatch) {
+      if (isMatch) {
+        return done(null, user);
+      } else {
+        return done(null, false, { message: 'Incorrect password.' });
+      }
+    });
+  });
+}));
 
-// mongoose.connect("mongodb://localhost:27017/bootcamp");
-// const db = mongoose.connection;
-// db.on("error", console.log.bind(console, "connection error"));
-// db.once("open", function (callback) {
-//   console.log("connection succeeded");
-// });
+passport.serializeUser(function(user, done) {
+  done(null, user.id);
+});
 
-// const app = express();
+passport.deserializeUser(function(id, done) {
+  User.findById(id, function(err, user) {
+    done(err, user);
+  });
+});
 
-// app.use(bodyParser.json());
-// app.use(express.static("views"));
-// app.use(
-//   bodyParser.urlencoded({
-//     extended: true,
-//   })
-// );
+var userSchema = new mongoose.Schema({
+  fullname: { type: String, required: true, unique: false },
+  email: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
+  resetPasswordToken: String,
+  resetPasswordExpires: Date
+});
 
-// app.post("/sign_up", function (req, res) {
-//   var fullname = req.body.fullname;
-//   var email = req.body.email;
-//   var pass = req.body.password;
-//   var Confirmer = req.body.Confirmer;
+userSchema.pre('save', function(next) {
+  var user = this;
+  var SALT_FACTOR = 5;
 
-//   var data = {
-//     fullname: fullname,
-//     email: email,
-//     password: pass,
-//     Confirmer: Confirmer,
-//   };
-//   db.collection("inscrire").insertOne(data, function (err, collection) {
-//     if (err) throw err;
-//     console.log("Record inserted Successfully");
-//   });
-//   return res.redirect("Signup_Success.ejs");
-// });
+  if (!user.isModified('password')) return next();
 
-// app
-//   .get("/", function (req, res) {
-//     res.set({
-//       "Access-control-Allow-Origin": "*",
-//     });
-//     return res.redirect("index.ejs");
-//   })
-//   .listen(3000);
+  bcrypt.genSalt(SALT_FACTOR, function(err, salt) {
+    if (err) return next(err);
 
-// console.log(`Server listenring on ${host}:${port}`);
+    bcrypt.hash(user.password, salt, null, function(err, hash) {
+      if (err) return next(err);
+      user.password = hash;
+      next();
+    });
+  });
+});
+
+userSchema.methods.comparePassword = function(candidatePassword, cb) {
+  bcrypt.compare(candidatePassword, this.password, function(err, isMatch) {
+    if (err) return cb(err);
+    cb(null, isMatch);
+  });
+};
+
+var User = mongoose.model('User', userSchema);
+
+mongoose.connect('mongodb://localhost:27017/tests');
+
+var app = express();
+
+// Middleware
+app.set('port', process.env.PORT || 3000);
+app.engine('html', cons.swig)
+app.set('views', __dirname + '/views');
+app.use(express.static(path.join(__dirname, '/public')));
+app.set('view engine', 'html');
+app.use(logger('dev'));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded());
+app.use(cookieParser());
+app.use(session({ secret: 'session secret key' }));
+app.use(flash());
+app.use(passport.initialize());
+app.use(passport.session());
+
+// Routes
+app.get('/', function(req, res){
+  res.render('index.html')
+});
+app.get('/log_in_up', function(req, res){
+  res.render('log_in_up.html')
+});
+app.get('/Signup_Success', function(req, res){
+  res.render('Signup_Success.html')
+});
+app.get("/log", function (req, res) {
+  res.render("/log_in_up");
+});
+//se connecter
+app.get('/login', function(req, res) {
+  res.render('login', {
+    user: req.user
+  });
+});
+app.post('/login', function(req, res, next) {
+  passport.authenticate('local', function(err, user, info) {
+    if (err) return next(err)
+    if (!user) {
+      return res.redirect('/login')
+    }
+    req.logIn(user, function(err) {
+      if (err) return next(err);
+      return res.redirect('/');
+    });
+  })(req, res, next);
+});
+
+//creer compte
+app.get('/signup', function(req, res) {
+  res.render('signup', {
+    user: req.user
+  });
+});
+app.post('/signup', function(req, res) {
+  var user = new User({
+      fullname: req.body.fullname,
+      email: req.body.email,
+      password: req.body.password
+    });
+
+  user.save(function(err) {
+    req.logIn(user, function(err) {
+      res.redirect('/Signup_Success');
+    });
+  });
+});
+
+//se deconnecter
+app.get('/logout', function(req, res){
+  req.logout();
+  res.redirect('/');
+});
+
+//forget password
+app.get('/forgot', function(req, res) {
+  res.render('forgot', {
+    user: req.user
+  });
+});
+app.post('/forgot', function(req, res, next) {
+  async.waterfall([
+    function(done) {
+      crypto.randomBytes(20, function(err, buf) {
+        var token = buf.toString('hex');
+        done(err, token);
+      });
+    },
+    function(token, done) {
+      User.findOne({ email: req.body.email }, function(err, user) {
+        if (!user) {
+          req.flash('error', 'No account with that email address exists.');
+          return res.redirect('/forgot');
+        }
+
+        user.resetPasswordToken = token;
+        user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
+
+        user.save(function(err) {
+          done(err, token, user);
+        });
+      });
+    },
+    function(token, user, done) {
+      var smtpTransport = nodemailer.createTransport({
+        service: 'Gmail',
+        auth: {
+          user: 'jeerecompany@gmail.com',
+          pass: 'iicfpugnceazzaph'
+        }
+      });
+      var mailOptions = {
+        to: user.email,
+        from: 'passwordreset@demo.com',
+        subject: 'Node.js Password Reset',
+        text: 'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n' +
+          'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
+          'http://' + req.headers.host + '/reset/' + token + '\n\n' +
+          'If you did not request this, please ignore this email and your password will remain unchanged.\n'
+      };
+      smtpTransport.sendMail(mailOptions, function(err) {
+        req.flash('info', 'An e-mail has been sent to ' + user.email + ' with further instructions.');
+        done(err, 'done');
+      });
+    }
+  ], function(err) {
+    if (err) return next(err);
+    res.redirect('/forgot');
+  });
+});
+app.get('/reset/:token', function(req, res) {
+  User.findOne({ resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } }, function(err, user) {
+    if (!user) {
+      req.flash('error', 'Password reset token is invalid or has expired.');
+      return res.redirect('/forgot');
+    }
+    res.render('reset', {
+      user: req.user
+    });
+  });
+});
+app.post('/reset/:token', function(req, res) {
+  async.waterfall([
+    function(done) {
+      User.findOne({ resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } }, function(err, user) {
+        if (!user) {
+          req.flash('error', 'Password reset token is invalid or has expired.');
+          return res.redirect('back');
+        }
+
+        user.password = req.body.password;
+        user.resetPasswordToken = undefined;
+        user.resetPasswordExpires = undefined;
+
+        user.save(function(err) {
+          req.logIn(user, function(err) {
+            done(err, user);
+          });
+        });
+      });
+    },
+    function(user, done) {
+      var smtpTransport = nodemailer.createTransport({
+        service: 'Gmail',
+        auth: {
+          user: 'jeerecompany@gmail.com',
+          pass: 'iicfpugnceazzaph'
+        }
+      });
+      var mailOptions = {
+        to: user.email,
+        from: 'passwordreset@demo.com',
+        subject: 'Your password has been changed',
+        text: 'Hello,\n\n' +
+          'This is a confirmation that the password for your account ' + user.email + ' has just been changed.\n'
+      };
+      smtpTransport.sendMail(mailOptions, function(err) {
+        req.flash('success', 'Success! Your password has been changed.');
+        done(err);
+      });
+    }
+  ], function(err) {
+    res.redirect('/');
+  });
+});
+
+
+
+app.listen(app.get('port'), function() {
+  console.log('Express server listening on port ' + app.get('port'));
+});
