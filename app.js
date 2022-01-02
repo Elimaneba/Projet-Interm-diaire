@@ -29,6 +29,9 @@ var userSchema = new mongoose.Schema({
   fullname: { type: String, required: true, unique: false },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
+  Phone: {type: Number, default: 770000000},
+  pays: { type: String, default: "pays non renseigner"},
+  Region: {type: String, default: "region non renseigner"},
   resetPasswordToken: String,
   resetPasswordExpires: Date
 });
@@ -90,16 +93,21 @@ app.get('/reset/:token', function(req, res){
 app.get('/forgot_Success', function(req, res){
   res.render('forgot_Success.html')
 });
+app.get('/update', function(req, res){
+  res.render('update.html')
+});
+app.get('/accueil', function(req, res){
+  res.render('home.html')
+});
+app.get('/profil', function(req, res){
+  res.redirect('/update');
+});
+
+
 
 app.get('/log_in', function(req, res){
   res.redirect('/log_in_up');
 });
-app.get('/profil', function(req, res){
-  req.profil();
-  res.redirect('/profil');
-});
-
-
 
 //se connecter
 app.get('/login', function(req, res) {
@@ -158,6 +166,38 @@ app.post("/signup", function (req, res) {
 app.get('/logout', function(req, res){
   req.logout();
   res.redirect('/');
+});
+
+
+// Showing UPDATE form
+
+app.get('/update/:email', function(req, res) {
+  res.render('home', {
+    user: req.user
+  });
+});
+
+app.post("/update/:email", async (req, res) => {
+  const update =  bcrypt.hash(req.body.password, 10).then((hash) => {
+    const user = new User({
+      password: hash,
+      fullname: req.body.fullname,
+      email: req.body.email,
+      phone: req.body.phone,
+      region: req.body.region,
+      pays: req.body.pays,
+    });
+    db.collection("users").insertOne(user, function (err, collection) {
+      if (err) throw err;
+      console.log("Record inserted Successfully");
+    });
+  });
+  const filter = { email: req.params.email };
+  const updatedDocument = await User.findOneAndUpdate(filter, update, {
+    new: true,
+  });
+
+  return res.redirect("home").send(updatedDocument);
 });
 
 //forget password
