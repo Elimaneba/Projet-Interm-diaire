@@ -8,25 +8,12 @@ var mongoose = require('mongoose');
 var nodemailer = require('nodemailer');
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
-var bcrypt = require('bcrypt-nodejs');
+const bcrypt = require("bcrypt");
 var async = require('async');
 var crypto = require('crypto');
 var flash = require('express-flash');
 var cons = require('consolidate');
 
-passport.use(new LocalStrategy(function(username, password, done) {
-  User.findOne({ username: username }, function(err, user) {
-    if (err) return done(err);
-    if (!user) return done(null, false, { message: 'Incorrect username.' });
-    user.comparePassword(password, function(err, isMatch) {
-      if (isMatch) {
-        return done(null, user);
-      } else {
-        return done(null, false, { message: 'Incorrect password.' });
-      }
-    });
-  });
-}));
 
 passport.serializeUser(function(user, done) {
   done(null, user.id);
@@ -46,23 +33,6 @@ var userSchema = new mongoose.Schema({
   resetPasswordExpires: Date
 });
 
-userSchema.pre('save', function(next) {
-  var user = this;
-  var SALT_FACTOR = 5;
-
-  if (!user.isModified('password')) return next();
-
-  bcrypt.genSalt(SALT_FACTOR, function(err, salt) {
-    if (err) return next(err);
-
-    bcrypt.hash(user.password, salt, null, function(err, hash) {
-      if (err) return next(err);
-      user.password = hash;
-      next();
-    });
-  });
-});
-
 userSchema.methods.comparePassword = function(candidatePassword, cb) {
   bcrypt.compare(candidatePassword, this.password, function(err, isMatch) {
     if (err) return cb(err);
@@ -73,6 +43,13 @@ userSchema.methods.comparePassword = function(candidatePassword, cb) {
 var User = mongoose.model('User', userSchema);
 
 mongoose.connect('mongodb://localhost:27017/tests');
+var db = mongoose.connection;
+
+db.on("error", console.error.bind(console, "connection error:"));
+
+db.once("open", function () {
+  console.log("Connection Successful!");
+});
 
 var app = express();
 
@@ -101,26 +78,58 @@ app.get('/log_in_up', function(req, res){
 app.get('/Signup_Success', function(req, res){
   res.render('Signup_Success.html')
 });
-app.get("/log", function (req, res) {
-  res.render("/log_in_up");
+app.get('/home', function(req, res){
+  res.render('home.html')
 });
+app.get('/forgot', function(req, res){
+  res.render('forgot.html')
+});
+app.get('/reset/:token', function(req, res){
+  res.render('reset.html')
+});
+app.get('/forgot_Success', function(req, res){
+  res.render('forgot_Success.html')
+});
+
+app.get('/log_in', function(req, res){
+  res.redirect('/log_in_up');
+});
+app.get('/profil', function(req, res){
+  req.profil();
+  res.redirect('/profil');
+});
+
+
+
 //se connecter
 app.get('/login', function(req, res) {
   res.render('login', {
     user: req.user
   });
 });
-app.post('/login', function(req, res, next) {
-  passport.authenticate('local', function(err, user, info) {
-    if (err) return next(err)
-    if (!user) {
-      return res.redirect('/login')
-    }
-    req.logIn(user, function(err) {
-      if (err) return next(err);
-      return res.redirect('/');
-    });
-  })(req, res, next);
+
+app.post("/login", async (req, res) => {
+  User.findOne({ email: req.body.email })
+    .then((user) => {
+      if (!user) {
+        return res.statusCode(401).json({ error: "Utilisateur non trouvé !" });
+      }
+      bcrypt
+        .compare(req.body.password, user.password)
+        .then((valid) => {
+          if (!valid) {
+            return res.status(401).json({ error: "Mot de passe incorrect !" });
+          }
+          return res.redirect("home").json({
+            userId: user._id,
+            token: jwt.sign({ userId: user._id }, "RANDOM_TOKEN_SECRET", {
+              expiresIn: "24h",
+            }),
+          });
+        })
+        .catch((error) => res.status(500).json({ error }));
+    })
+    .catch((error) => res.status(500).json({ error }));
 });
 
 //creer compte
@@ -129,17 +138,19 @@ app.get('/signup', function(req, res) {
     user: req.user
   });
 });
-app.post('/signup', function(req, res) {
-  var user = new User({
+
+app.post("/signup", function (req, res) {
+  bcrypt.hash(req.body.password, 10).then((hash) => {
+    const user = new User({
+      password: hash,
       fullname: req.body.fullname,
       email: req.body.email,
-      password: req.body.password
     });
-
-  user.save(function(err) {
-    req.logIn(user, function(err) {
-      res.redirect('/Signup_Success');
+    db.collection("users").insertOne(user, function (err, collection) {
+      if (err) throw err;
+      console.log("Record inserted Successfully");
     });
+    return res.redirect("Signup_Success");
   });
 });
 
@@ -257,7 +268,7 @@ app.post('/reset/:token', function(req, res) {
       });
     }
   ], function(err) {
-    res.redirect('/');
+    res.redirect('/forgot_Success');
   });
 });
 

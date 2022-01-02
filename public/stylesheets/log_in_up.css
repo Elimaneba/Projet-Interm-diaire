@@ -19,6 +19,14 @@ body {
 nav {
     margin-top: -2%;
 }
+.sign-success{
+    margin-top: 10%;
+    padding: auto;
+}
+.loginup{
+    margin-top: 50%;
+    padding: auto;
+}
 
 h1 {
     font-weight: bold;
