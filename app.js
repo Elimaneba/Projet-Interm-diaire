@@ -90,7 +90,7 @@ app.get('/forgot', function(req, res){
 app.get('/reset/:token', function(req, res){
   res.render('reset.html')
 });
-app.get('/forgot_Success', function(req, res){
+app.get('/reset/forgot_Success', function(req, res){
   res.render('forgot_Success.html')
 });
 app.get('/update', function(req, res){
@@ -169,8 +169,7 @@ app.get('/logout', function(req, res){
 });
 
 
-// Showing UPDATE form
-
+// Update profil
 app.get('/update/:email', function(req, res) {
   res.render('home', {
     user: req.user
@@ -200,9 +199,10 @@ app.post("/update/:email", async (req, res) => {
   return res.redirect("home").send(updatedDocument);
 });
 
+
 //forget password
 app.get('/forgot', function(req, res) {
-  res.render('forgot', {
+  res.render('forgot_Success', {
     user: req.user
   });
 });
@@ -262,7 +262,7 @@ app.get('/reset/:token', function(req, res) {
       req.flash('error', 'Password reset token is invalid or has expired.');
       return res.redirect('/forgot');
     }
-    res.render('reset', {
+    res.render('forgot_Success', {
       user: req.user
     });
   });
@@ -308,7 +308,7 @@ app.post('/reset/:token', function(req, res) {
       });
     }
   ], function(err) {
-    res.redirect('/forgot_Success');
+    res.redirect('/forgot_success');
   });
 });
 
